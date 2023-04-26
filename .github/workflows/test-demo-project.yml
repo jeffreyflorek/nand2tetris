@@ -1,6 +1,7 @@
 name: 'Demo Project'
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - projects/demo/**
