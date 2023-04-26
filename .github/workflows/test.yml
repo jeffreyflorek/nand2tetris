@@ -1,0 +1,28 @@
+name: 'Test Projects'
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: demo
+        run: bash ./tools/HardwareSimulator.sh projects/demo/Xor.tst
+      - name: project01
+        run: find projects/01 -name *.tst | xargs -t -L1 ./tools/HardwareSimulator.sh
+      - name: project02
+        run: find projects/02 -name *.tst | xargs -t -L1 ./tools/HardwareSimulator.sh
+      - name: project03
+        run: find projects/03 -name *.tst | xargs -t -L1 ./tools/HardwareSimulator.sh
+      - name: project05
+        run: find projects/05 -name *.tst | grep -v Memory.tst | xargs -t -L1 ./tools/HardwareSimulator.sh
+      - name: project06
+        run: bash projects/06/check.sh
+      - name: project07
+        run: bash projects/07/check.sh
+      - name: project08
+        run: bash projects/08/check.sh
+      - name: project10
+        run: bash projects/10/check.sh
