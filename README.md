@@ -1,4 +1,8 @@
 # nand2tetris
+<div align="center">
+[![Demo Project](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml)
+</div>
+<br>
 My solutions for the projects in nand2tetris [[1]](#1).
 
 ## References
