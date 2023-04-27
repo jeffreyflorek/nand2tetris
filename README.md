@@ -1,8 +1,10 @@
 # nand2tetris
 <div align="center">
-[![Demo Project](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml)
+![Demo Project](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml/badge.svg)
 </div>
 <br>
+
+![Demo Project](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-demo-project.yml/badge.svg)
 My solutions for the projects in nand2tetris [[1]](#1).
 
 ## References
