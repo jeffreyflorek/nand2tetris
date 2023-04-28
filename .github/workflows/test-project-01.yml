@@ -1,0 +1,16 @@
+name: 'Project 01'
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - projects/01/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: project01
+        run: find projects/01 -name *.tst | xargs -t -L1 ./tools/HardwareSimulator.sh
