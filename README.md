@@ -7,6 +7,8 @@ My solutions for the projects in nand2tetris [[1]](#1).
 
 [![Project 02](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-02.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-02.yml)
 
+[![Project 03](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-03.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-03.yml)
+
 [![Project 04](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-04.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-04.yml)
 
 ## References
