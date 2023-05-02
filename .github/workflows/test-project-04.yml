@@ -12,5 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: project04
-        run: find projects/04 -name *.tst | xargs -t -L1 ./tools/CPUEmulator.sh
+      - name: project04-mult
+        run: ./tools/CPUEmulator.sh ./projects/04/mult/Mult.tst
+      - name: project04-fill
+        run: ./tools/CPUEmulator.sh ./projects/04/fill/FillAutomatic.tst
