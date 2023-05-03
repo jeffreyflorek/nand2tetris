@@ -39,5 +39,51 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    // A instruction or C instruction?
+    Mux16(a=instruction, b=alu-out, sel=instruction[15], out=areg-in);
+    Mux16(a=false, b=instruction, sel=instruction[15],
+          out[0]=jump-gt,
+          out[1]=jump-eq,
+          out[2]=jump-lt,
+          out[3]=writeM,
+          out[4]=writeD,
+          out[5]=writeAb,
+          out[6]=no,
+          out[7]=f,
+          out[8]=ny,
+          out[9]=zy,
+          out[10]=nx,
+          out[11]=zx,
+          out[12]=a);
+
+    // A register
+    Not(in=instruction[15], out=writeAa);
+    Or(a=writeAa, b=writeAb, out=writeA);
+    ARegister(in=areg-in, load=writeA, out=areg-out, out[0..14]=addressM);
+
+    // D register
+    DRegister(in=alu-out, load=writeD, out=alu-x);
+
+    // Select A or M for ALU input y
+    Mux16(a=areg-out, b=inM, sel=a, out=alu-y);
+
+    // Program Counter
+    PC(in=areg-out, load=jump, inc=true, reset=reset, out[0..14]=pc);
+
+    // Jump logic
+    Not(in=alu-zero, out=alu-nonzero);
+    Not(in=alu-neg, out=alu-nonneg);
+    And(a=alu-nonzero, b=alu-nonneg, out=alu-gt);
+    And(a=alu-nonzero, b=alu-neg, out=alu-lt);
+
+    And(a=jump-gt, b=alu-gt, out=jump0);
+    And(a=jump-eq, b=alu-zero, out=jump1);
+    And(a=jump-lt, b=alu-lt, out=jump2);
+
+    Or(a=jump0, b=jump1, out=jump-t1);
+    Or(a=jump-t1, b=jump2, out=jump);
+
+    // ALU logic
+    ALU(x=alu-x, y=alu-y, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, zr=alu-zero,
+        ng=alu-neg, out=alu-out, out=outM);
 }
