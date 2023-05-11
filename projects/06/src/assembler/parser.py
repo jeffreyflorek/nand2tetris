@@ -27,7 +27,14 @@ class Parser:
             raise Exception("advance called with no remaining instruction")
 
     def instruction_type(self):
-        return True
+        if not self.current_instruction:
+            raise Exception("current_instruction must not be empty")
+        elif self.current_instruction[0] == "@":
+            return Instruction.A_INSTRUCTION
+        elif self.current_instruction[0] == "(" and self.current_instruction[-1] == ")":
+            return Instruction.L_INSTRUCTION
+        else:
+            return Instruction.C_INSTRUCTION
 
     def symbol(self):
         return True
