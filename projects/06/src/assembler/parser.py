@@ -1,0 +1,48 @@
+from enum import Enum
+from collections import deque
+
+
+class Parser:
+    current_instruction = ""
+
+    def __init__(self, in_filename):
+        self.instructions = deque([])
+        with open(in_filename) as f:
+            for line in f:
+                instruction = line.strip()
+                if not instruction:
+                    continue
+                elif instruction[:2] == "//":
+                    continue
+                else:
+                    self.instructions.append(instruction)
+
+    def has_more_lines(self):
+        return len(self.instructions) > 0
+
+    def advance(self):
+        if self.has_more_lines():
+            self.current_instruction = self.instructions.popleft()
+        else:
+            raise Exception("advance called with no remaining instruction")
+
+    def instruction_type(self):
+        return True
+
+    def symbol(self):
+        return True
+
+    def dest(self):
+        return True
+
+    def comp(self):
+        return True
+
+    def jump(self):
+        return True
+
+
+class Instruction(Enum):
+    A_INSTRUCTION = 1
+    C_INSTRUCTION = 2
+    L_INSTRUCTION = 3
