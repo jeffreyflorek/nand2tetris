@@ -1,4 +1,5 @@
 from assembler.parser import Parser, Instruction
+import pytest
 
 
 def test_advance():
@@ -10,130 +11,118 @@ def test_advance():
         assert advance.current_instruction == "@20"
 
 
-def test_has_more_lines():
+def test_has_no_more_lines():
     with Parser("./tests/parser/empty.asm") as empty:
         assert empty.has_more_lines() == False
+
+
+def test_has_one_more_line():
     with Parser("./tests/parser/one_line.asm") as one_line:
         assert one_line.has_more_lines() == True
         one_line.in_file.readline()
         assert one_line.has_more_lines() == False
 
 
-def test_instruction_type():
+@pytest.mark.parametrize(
+    "instruction, expected_type",
+    [
+        ("@10", Instruction.A_INSTRUCTION),
+        ("0;JMP", Instruction.C_INSTRUCTION),
+        ("(LABEL)", Instruction.L_INSTRUCTION),
+    ],
+)
+def test_instruction_type(instruction, expected_type):
     with Parser("./tests/parser/empty.asm") as empty:
-        empty.current_instruction = "@10"
-        assert empty.instruction_type() == Instruction.A_INSTRUCTION
-        empty.current_instruction = "0;jmp"
-        assert empty.instruction_type() == Instruction.C_INSTRUCTION
-        empty.current_instruction = "(LABEL)"
-        assert empty.instruction_type() == Instruction.L_INSTRUCTION
+        empty.current_instruction = instruction
+        assert empty.instruction_type() == expected_type
 
 
-def test_symbol():
+@pytest.mark.parametrize(
+    "instruction, expected_label",
+    [
+        ("(LABEL)", "LABEL"),
+        ("@LABEL", "LABEL"),
+        ("@10", "10"),
+    ],
+)
+def test_symbol(instruction, expected_label):
     with Parser("./tests/parser/empty.asm") as empty:
-        empty.current_instruction = "(LABEL)"
-        assert empty.symbol() == "LABEL"
-        empty.current_instruction = "@LABEL"
-        assert empty.symbol() == "LABEL"
-        empty.current_instruction = "@10"
-        assert empty.symbol() == "10"
+        empty.current_instruction = instruction
+        assert empty.symbol() == expected_label
 
 
-def test_dest():
+@pytest.mark.parametrize(
+    "instruction, expected_dest",
+    [
+        ("0;jmp", "null"),
+        ("M=1", "M"),
+        ("D=1", "D"),
+        ("DM=1", "DM"),
+        ("A=1", "A"),
+        ("AM=1", "AM"),
+        ("AD=1", "AD"),
+        ("ADM=1", "ADM"),
+    ],
+)
+def test_dest(instruction, expected_dest):
     with Parser("./tests/parser/empty.asm") as empty:
-        empty.current_instruction = "0;jmp"
-        assert empty.dest() == "null"
-        empty.current_instruction = "M=1"
-        assert empty.dest() == "M"
-        empty.current_instruction = "D=1"
-        assert empty.dest() == "D"
-        empty.current_instruction = "DM=1"
-        assert empty.dest() == "DM"
-        empty.current_instruction = "A=1"
-        assert empty.dest() == "A"
-        empty.current_instruction = "AM=1"
-        assert empty.dest() == "AM"
-        empty.current_instruction = "AD=1"
-        assert empty.dest() == "AD"
-        empty.current_instruction = "ADM=1"
-        assert empty.dest() == "ADM"
+        empty.current_instruction = instruction
+        assert empty.dest() == expected_dest
 
 
-def test_comp():
+@pytest.mark.parametrize(
+    "instruction, expected_comp",
+    [
+        ("0;jmp", "0"),
+        ("M=1", "1"),
+        ("D=-1", "-1"),
+        ("M=D", "D"),
+        ("D=A", "A"),
+        ("D=M", "M"),
+        ("M=!D", "!D"),
+        ("M=!A", "!A"),
+        ("D=!M", "!M"),
+        ("M=-D", "-D"),
+        ("M=-A", "-A"),
+        ("D=-M", "-M"),
+        ("M=D+1", "D+1"),
+        ("D=A+1", "A+1"),
+        ("A=M+1", "M+1"),
+        ("M=D-1", "D-1"),
+        ("D=A-1", "A-1"),
+        ("A=M-1", "M-1"),
+        ("D=D+A", "D+A"),
+        ("D=D+M", "D+M"),
+        ("D=D-A", "D-A"),
+        ("D=D-M", "D-M"),
+        ("D=A-D", "A-D"),
+        ("D=M-D", "M-D"),
+        ("D=D&A", "D&A"),
+        ("D=D&M", "D&M"),
+        ("D=D|A", "D|A"),
+        ("D=D|M", "D|M"),
+    ],
+)
+def test_comp(instruction, expected_comp):
     with Parser("./tests/parser/empty.asm") as empty:
-        empty.current_instruction = "0;jmp"
-        assert empty.comp() == "0"
-        empty.current_instruction = "M=1"
-        assert empty.comp() == "	"
-        empty.current_instruction = "D=-1"
-        assert empty.comp() == "-1"
-        empty.current_instruction = "M=D"
-        assert empty.comp() == "D"
-        empty.current_instruction = "D=A"
-        assert empty.comp() == "A"
-        empty.current_instruction = "D=M"
-        assert empty.comp() == "M"
-        empty.current_instruction = "M=!D"
-        assert empty.comp() == "!D"
-        empty.current_instruction = "M=!A"
-        assert empty.comp() == "!A"
-        empty.current_instruction = "D=!M"
-        assert empty.comp() == "!M"
-        empty.current_instruction = "M=-D"
-        assert empty.comp() == "-D"
-        empty.current_instruction = "M=-A"
-        assert empty.comp() == "-A"
-        empty.current_instruction = "D=-M"
-        assert empty.comp() == "-M"
-        empty.current_instruction = "M=D+1"
-        assert empty.comp() == "D+1"
-        empty.current_instruction = "D=A+1"
-        assert empty.comp() == "A+1"
-        empty.current_instruction = "A=M+1"
-        assert empty.comp() == "M+1"
-        empty.current_instruction = "M=D-1"
-        assert empty.comp() == "D-1"
-        empty.current_instruction = "D=A-1"
-        assert empty.comp() == "A-1"
-        empty.current_instruction = "A=M-1"
-        assert empty.comp() == "M-1"
-        empty.current_instruction = "D=D+A"
-        assert empty.comp() == "D+A"
-        empty.current_instruction = "D=D+M"
-        assert empty.comp() == "D+M"
-        empty.current_instruction = "D=D-A"
-        assert empty.comp() == "D-A"
-        empty.current_instruction = "D=D-M"
-        assert empty.comp() == "D-M"
-        empty.current_instruction = "D=A-D"
-        assert empty.comp() == "A-D"
-        empty.current_instruction = "D=M-D"
-        assert empty.comp() == "M-D"
-        empty.current_instruction = "D=D&A"
-        assert empty.comp() == "D&A"
-        empty.current_instruction = "D=D&M"
-        assert empty.comp() == "D&M"
-        empty.current_instruction = "D=D|A"
-        assert empty.comp() == "D|A"
-        empty.current_instruction = "D=D|M"
-        assert empty.comp() == "D|M"
+        empty.current_instruction = instruction
+        assert empty.comp() == expected_comp
 
 
-def test_jump():
+@pytest.mark.parametrize(
+    "instruction, expected_jump",
+    [
+        ("M=1", "null"),
+        ("0;JGT", "JGT"),
+        ("0;JEQ", "JEQ"),
+        ("0;JGE", "JGE"),
+        ("0;JLT", "JLT"),
+        ("0;JNE", "JNE"),
+        ("0;JLE", "JLE"),
+        ("0;JMP", "JMP"),
+    ],
+)
+def test_jump(instruction, expected_jump):
     with Parser("./tests/parser/empty.asm") as empty:
-        empty.current_instruction = "M=1"
-        assert empty.dest() == "null"
-        empty.current_instruction = "0;JGT"
-        assert empty.dest() == "JGT"
-        empty.current_instruction = "0;JEQ"
-        assert empty.dest() == "JEQ"
-        empty.current_instruction = "0;JGE"
-        assert empty.dest() == "JGE"
-        empty.current_instruction = "0;JLT"
-        assert empty.dest() == "JLT"
-        empty.current_instruction = "0;JNE"
-        assert empty.dest() == "JNE"
-        empty.current_instruction = "0;JLE"
-        assert empty.dest() == "JLE"
-        empty.current_instruction = "0;JMP"
-        assert empty.dest() == "JMP"
+        empty.current_instruction = instruction
+        assert empty.jump() == expected_jump
