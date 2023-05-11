@@ -37,18 +37,18 @@ def test_instruction_type(instruction, expected_type):
     assert empty.instruction_type() == expected_type
 
 
-# @pytest.mark.parametrize(
-#     "instruction, expected_label",
-#     [
-#         ("(LABEL)", "LABEL"),
-#         ("@LABEL", "LABEL"),
-#         ("@10", "10"),
-#     ],
-# )
-# def test_symbol(instruction, expected_label):
-#     empty = Parser("./tests/parser/empty.asm")
-#     empty.current_instruction = instruction
-#     assert empty.symbol() == expected_label
+@pytest.mark.parametrize(
+    "instruction, expected_label",
+    [
+        ("(LABEL)", "LABEL"),
+        ("@LABEL", "LABEL"),
+        ("@10", "10"),
+    ],
+)
+def test_symbol(instruction, expected_label):
+    empty = Parser("./tests/parser/empty.asm")
+    empty.current_instruction = instruction
+    assert empty.symbol() == expected_label
 
 
 # @pytest.mark.parametrize(

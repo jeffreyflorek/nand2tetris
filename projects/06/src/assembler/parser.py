@@ -37,7 +37,14 @@ class Parser:
             return Instruction.C_INSTRUCTION
 
     def symbol(self):
-        return True
+        if self.instruction_type() == Instruction.A_INSTRUCTION:
+            return self.current_instruction[1:]
+        elif self.instruction_type() == Instruction.L_INSTRUCTION:
+            return self.current_instruction[1:-1]
+        else:
+            raise Exception(
+                "current_instruction must be of type A_INSTRUCTION or L_INSTRUCTION"
+            )
 
     def dest(self):
         return True
