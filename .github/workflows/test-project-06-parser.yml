@@ -22,4 +22,5 @@ jobs:
           pip install ruff pytest
       - name: Test with pytest
         run: |
-          pytest ./projects/06/tests/test_parser.py
+          cd ./projects/06
+          pytest ./tests/test_parser.py
