@@ -70,43 +70,43 @@ def test_dest(instruction, expected_dest):
     assert empty.dest() == expected_dest
 
 
-# @pytest.mark.parametrize(
-#     "instruction, expected_comp",
-#     [
-#         ("0;jmp", "0"),
-#         ("M=1", "1"),
-#         ("D=-1", "-1"),
-#         ("M=D", "D"),
-#         ("D=A", "A"),
-#         ("D=M", "M"),
-#         ("M=!D", "!D"),
-#         ("M=!A", "!A"),
-#         ("D=!M", "!M"),
-#         ("M=-D", "-D"),
-#         ("M=-A", "-A"),
-#         ("D=-M", "-M"),
-#         ("M=D+1", "D+1"),
-#         ("D=A+1", "A+1"),
-#         ("A=M+1", "M+1"),
-#         ("M=D-1", "D-1"),
-#         ("D=A-1", "A-1"),
-#         ("A=M-1", "M-1"),
-#         ("D=D+A", "D+A"),
-#         ("D=D+M", "D+M"),
-#         ("D=D-A", "D-A"),
-#         ("D=D-M", "D-M"),
-#         ("D=A-D", "A-D"),
-#         ("D=M-D", "M-D"),
-#         ("D=D&A", "D&A"),
-#         ("D=D&M", "D&M"),
-#         ("D=D|A", "D|A"),
-#         ("D=D|M", "D|M"),
-#     ],
-# )
-# def test_comp(instruction, expected_comp):
-#     empty = Parser("./tests/parser/empty.asm")
-#     empty.current_instruction = instruction
-#     assert empty.comp() == expected_comp
+@pytest.mark.parametrize(
+    "instruction, expected_comp",
+    [
+        ("0;jmp", "0"),
+        ("M=1", "1"),
+        ("D=-1", "-1"),
+        ("M=D", "D"),
+        ("D=A", "A"),
+        ("D=M", "M"),
+        ("M=!D", "!D"),
+        ("M=!A", "!A"),
+        ("D=!M", "!M"),
+        ("M=-D", "-D"),
+        ("M=-A", "-A"),
+        ("D=-M", "-M"),
+        ("M=D+1", "D+1"),
+        ("D=A+1", "A+1"),
+        ("A=M+1", "M+1"),
+        ("M=D-1", "D-1"),
+        ("D=A-1", "A-1"),
+        ("A=M-1", "M-1"),
+        ("D=D+A", "D+A"),
+        ("D=D+M", "D+M"),
+        ("D=D-A", "D-A"),
+        ("D=D-M", "D-M"),
+        ("D=A-D", "A-D"),
+        ("D=M-D", "M-D"),
+        ("D=D&A", "D&A"),
+        ("D=D&M", "D&M"),
+        ("D=D|A", "D|A"),
+        ("D=D|M", "D|M"),
+    ],
+)
+def test_comp(instruction, expected_comp):
+    empty = Parser("./tests/parser/empty.asm")
+    empty.current_instruction = instruction
+    assert empty.comp() == expected_comp
 
 
 # @pytest.mark.parametrize(
