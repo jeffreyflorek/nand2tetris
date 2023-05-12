@@ -109,20 +109,20 @@ def test_comp(instruction, expected_comp):
     assert empty.comp() == expected_comp
 
 
-# @pytest.mark.parametrize(
-#     "instruction, expected_jump",
-#     [
-#         ("M=1", "null"),
-#         ("0;JGT", "JGT"),
-#         ("0;JEQ", "JEQ"),
-#         ("0;JGE", "JGE"),
-#         ("0;JLT", "JLT"),
-#         ("0;JNE", "JNE"),
-#         ("0;JLE", "JLE"),
-#         ("0;JMP", "JMP"),
-#     ],
-# )
-# def test_jump(instruction, expected_jump):
-#     empty = Parser("./tests/parser/empty.asm")
-#     empty.current_instruction = instruction
-#     assert empty.jump() == expected_jump
+@pytest.mark.parametrize(
+    "instruction, expected_jump",
+    [
+        ("M=1", "null"),
+        ("0;JGT", "JGT"),
+        ("0;JEQ", "JEQ"),
+        ("0;JGE", "JGE"),
+        ("0;JLT", "JLT"),
+        ("0;JNE", "JNE"),
+        ("0;JLE", "JLE"),
+        ("0;JMP", "JMP"),
+    ],
+)
+def test_jump(instruction, expected_jump):
+    empty = Parser("./tests/parser/empty.asm")
+    empty.current_instruction = instruction
+    assert empty.jump() == expected_jump

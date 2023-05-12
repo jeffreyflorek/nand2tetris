@@ -65,7 +65,13 @@ class Parser:
             raise Exception("current_instruction must be of type C_INSTRUCTION")
 
     def jump(self):
-        return True
+        if self.instruction_type() == Instruction.C_INSTRUCTION:
+            if ";" in self.current_instruction:
+                return self.current_instruction.split(";")[1]
+            else:
+                return "null"
+        else:
+            raise Exception("current_instruction must be of type C_INSTRUCTION")
 
 
 class Instruction(Enum):
