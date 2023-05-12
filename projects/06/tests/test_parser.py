@@ -51,23 +51,23 @@ def test_symbol(instruction, expected_label):
     assert empty.symbol() == expected_label
 
 
-# @pytest.mark.parametrize(
-#     "instruction, expected_dest",
-#     [
-#         ("0;jmp", "null"),
-#         ("M=1", "M"),
-#         ("D=1", "D"),
-#         ("DM=1", "DM"),
-#         ("A=1", "A"),
-#         ("AM=1", "AM"),
-#         ("AD=1", "AD"),
-#         ("ADM=1", "ADM"),
-#     ],
-# )
-# def test_dest(instruction, expected_dest):
-#     empty = Parser("./tests/parser/empty.asm")
-#     empty.current_instruction = instruction
-#     assert empty.dest() == expected_dest
+@pytest.mark.parametrize(
+    "instruction, expected_dest",
+    [
+        ("0;jmp", "null"),
+        ("M=1", "M"),
+        ("D=1", "D"),
+        ("DM=1", "DM"),
+        ("A=1", "A"),
+        ("AM=1", "AM"),
+        ("AD=1", "AD"),
+        ("ADM=1", "ADM"),
+    ],
+)
+def test_dest(instruction, expected_dest):
+    empty = Parser("./tests/parser/empty.asm")
+    empty.current_instruction = instruction
+    assert empty.dest() == expected_dest
 
 
 # @pytest.mark.parametrize(
