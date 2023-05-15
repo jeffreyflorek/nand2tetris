@@ -4,11 +4,13 @@ import pytest
 
 def test_advance():
     advance = Parser("./tests/parser/advance.asm")
-    assert advance.current_instruction == ""
+    assert advance.current_instruction == -1
     advance.advance()
-    assert advance.current_instruction == "@10"
+    assert advance.current_instruction == 0
+    assert advance.instructions[advance.current_instruction] == "@10"
     advance.advance()
-    assert advance.current_instruction == "@20"
+    assert advance.current_instruction == 1
+    assert advance.instructions[advance.current_instruction] == "@20"
 
 
 def test_has_no_more_lines():
@@ -33,7 +35,8 @@ def test_has_one_more_line():
 )
 def test_instruction_type(instruction, expected_type):
     empty = Parser("./tests/parser/empty.asm")
-    empty.current_instruction = instruction
+    empty.current_instruction = 0
+    empty.instructions.append(instruction)
     assert empty.instruction_type() == expected_type
 
 
@@ -47,14 +50,15 @@ def test_instruction_type(instruction, expected_type):
 )
 def test_symbol(instruction, expected_label):
     empty = Parser("./tests/parser/empty.asm")
-    empty.current_instruction = instruction
+    empty.current_instruction = 0
+    empty.instructions.append(instruction)
     assert empty.symbol() == expected_label
 
 
 @pytest.mark.parametrize(
     "instruction, expected_dest",
     [
-        ("0;jmp", "null"),
+        ("0;jmp", None),
         ("M=1", "M"),
         ("D=1", "D"),
         ("DM=1", "DM"),
@@ -66,7 +70,8 @@ def test_symbol(instruction, expected_label):
 )
 def test_dest(instruction, expected_dest):
     empty = Parser("./tests/parser/empty.asm")
-    empty.current_instruction = instruction
+    empty.current_instruction = 0
+    empty.instructions.append(instruction)
     assert empty.dest() == expected_dest
 
 
@@ -105,14 +110,15 @@ def test_dest(instruction, expected_dest):
 )
 def test_comp(instruction, expected_comp):
     empty = Parser("./tests/parser/empty.asm")
-    empty.current_instruction = instruction
+    empty.current_instruction = 0
+    empty.instructions.append(instruction)
     assert empty.comp() == expected_comp
 
 
 @pytest.mark.parametrize(
     "instruction, expected_jump",
     [
-        ("M=1", "null"),
+        ("M=1", None),
         ("0;JGT", "JGT"),
         ("0;JEQ", "JEQ"),
         ("0;JGE", "JGE"),
@@ -124,5 +130,6 @@ def test_comp(instruction, expected_comp):
 )
 def test_jump(instruction, expected_jump):
     empty = Parser("./tests/parser/empty.asm")
-    empty.current_instruction = instruction
+    empty.current_instruction = 0
+    empty.instructions.append(instruction)
     assert empty.jump() == expected_jump
