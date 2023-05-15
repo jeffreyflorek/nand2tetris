@@ -1,4 +1,4 @@
-from assembler.parser import Parser, Instruction
+from assembler.parser import Parser
 import pytest
 
 
@@ -26,9 +26,9 @@ def test_has_one_more_line():
 @pytest.mark.parametrize(
     "instruction, expected_type",
     [
-        ("@10", Instruction.A_INSTRUCTION),
-        ("0;JMP", Instruction.C_INSTRUCTION),
-        ("(LABEL)", Instruction.L_INSTRUCTION),
+        ("@10", "A_INSTRUCTION"),
+        ("0;JMP", "C_INSTRUCTION"),
+        ("(LABEL)", "L_INSTRUCTION"),
     ],
 )
 def test_instruction_type(instruction, expected_type):

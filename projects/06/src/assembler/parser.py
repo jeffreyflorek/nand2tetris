@@ -1,4 +1,3 @@
-from enum import Enum
 from collections import deque
 
 
@@ -30,16 +29,16 @@ class Parser:
         if not self.current_instruction:
             raise Exception("current_instruction must not be empty")
         elif self.current_instruction[0] == "@":
-            return Instruction.A_INSTRUCTION
+            return "A_INSTRUCTION"
         elif self.current_instruction[0] == "(" and self.current_instruction[-1] == ")":
-            return Instruction.L_INSTRUCTION
+            return "L_INSTRUCTION"
         else:
-            return Instruction.C_INSTRUCTION
+            return "C_INSTRUCTION"
 
     def symbol(self):
-        if self.instruction_type() == Instruction.A_INSTRUCTION:
+        if self.instruction_type() == "A_INSTRUCTION":
             return self.current_instruction[1:]
-        elif self.instruction_type() == Instruction.L_INSTRUCTION:
+        elif self.instruction_type() == "L_INSTRUCTION":
             return self.current_instruction[1:-1]
         else:
             raise Exception(
@@ -47,7 +46,7 @@ class Parser:
             )
 
     def dest(self):
-        if self.instruction_type() == Instruction.C_INSTRUCTION:
+        if self.instruction_type() == "C_INSTRUCTION":
             if "=" in self.current_instruction:
                 return self.current_instruction.split("=")[0]
             else:
@@ -56,7 +55,7 @@ class Parser:
             raise Exception("current_instruction must be of type C_INSTRUCTION")
 
     def comp(self):
-        if self.instruction_type() == Instruction.C_INSTRUCTION:
+        if self.instruction_type() == "C_INSTRUCTION":
             if "=" in self.current_instruction:
                 return self.current_instruction.split("=")[1].split(";")[0]
             else:
@@ -65,16 +64,10 @@ class Parser:
             raise Exception("current_instruction must be of type C_INSTRUCTION")
 
     def jump(self):
-        if self.instruction_type() == Instruction.C_INSTRUCTION:
+        if self.instruction_type() == "C_INSTRUCTION":
             if ";" in self.current_instruction:
                 return self.current_instruction.split(";")[1]
             else:
                 return "null"
         else:
             raise Exception("current_instruction must be of type C_INSTRUCTION")
-
-
-class Instruction(Enum):
-    A_INSTRUCTION = 1
-    C_INSTRUCTION = 2
-    L_INSTRUCTION = 3
