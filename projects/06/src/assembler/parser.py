@@ -24,6 +24,9 @@ class Parser:
         else:
             raise Exception("advance called with no remaining instruction")
 
+    def reset(self):
+        self.current_instruction = 0
+
     def instruction_type(self):
         if not self.instructions[self.current_instruction]:
             raise Exception("current_instruction must not be empty")
