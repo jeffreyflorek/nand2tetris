@@ -61,7 +61,7 @@ def test_symbol(instruction, expected_label):
         ("0;jmp", None),
         ("M=1", "M"),
         ("D=1", "D"),
-        ("DM=1", "DM"),
+        ("MD=1", "MD"),
         ("A=1", "A"),
         ("AM=1", "AM"),
         ("AD=1", "AD"),
