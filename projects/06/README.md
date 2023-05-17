@@ -7,6 +7,8 @@ My implementation of the assembler from Chapter 6 of nand2tetris [[1]](#1).
 
 [![Assembler (no symbols)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-assembler_nosym.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-assembler_nosym.yml)
 
+[![Symbol Table](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-symbol.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-symbol.yml)
+
 [![Assembler](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-assembler.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06-assembler.yml)
 
 ## References
