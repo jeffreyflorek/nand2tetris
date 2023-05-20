@@ -12,7 +12,7 @@ class Parser:
                 if not instruction or instruction.startswith("//"):
                     continue
                 if "//" in instruction:
-                    instruction = instruction[: instruction.index("//")]
+                    instruction = instruction[: instruction.index("//")].strip()
                 self.instructions.append(instruction)
 
     def has_more_lines(self):
@@ -25,7 +25,7 @@ class Parser:
             raise Exception("advance called with no remaining instruction")
 
     def reset(self):
-        self.current_instruction = 0
+        self.current_instruction = -1
 
     def instruction_type(self):
         if not self.instructions[self.current_instruction]:
