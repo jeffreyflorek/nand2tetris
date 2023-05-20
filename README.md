@@ -13,5 +13,7 @@ My solutions for the projects in nand2tetris [[1]](#1).
 
 [![Project 05](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-05.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-05.yml)
 
+[![Project 06](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06.yml/badge.svg)](https://github.com/jeffreyflorek/nand2tetris/actions/workflows/test-project-06.yml)
+
 ## References
 <a id="1">[1]</a> Noam Nisan and Shimon Schocken. 2021. The Elements of Computing Systems, Second Edition: Building a Modern Computer from First Principles, MIT Press.

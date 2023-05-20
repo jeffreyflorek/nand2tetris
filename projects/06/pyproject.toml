@@ -1,0 +1,13 @@
+[project]
+name = "hack_assembler"
+version = "0.0.1"
+authors = [
+  { name="Jeffrey Florek", email="me@jeffreyflorek.com" },
+]
+description = "Assembler for the Hack computer from nand2tetris"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "src"
