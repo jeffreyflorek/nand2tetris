@@ -205,17 +205,10 @@ Assembly code:
 M=M-1
 A=M
 D=M
-// Decrement stack pointer and add popped value to D
-@SP
-M=M-1
-A=M
-D=D+M
-// Push value onto stack
-@SP
-A=M
-M=D
-@SP
-M=M+1
+// Move one address down the stack
+A=A-1
+// Add
+M=D+M
 #+end_example
 
 ** Subtraction
@@ -226,22 +219,12 @@ sub
 
 Assembly code:
 #+begin_example
-// Decrement stack pointer and pop into D
 @SP
 M=M-1
 A=M
 D=M
-// Decrement stack pointer, subtract D from popped value, and store in D
-@SP
-M=M-1
-A=M
-D=M-D
-// Push value onto stack
-@SP
-A=M
-M=D
-@SP
-M=M+1
+A=A-1
+M=M-D
 #+end_example
 
 ** Negation
@@ -252,15 +235,9 @@ neg
 
 Assembly code:
 #+begin_example
-// Decrement stack pointer and address next value on stack
 @SP
-M=M-1
-A=M
-// Negate value
+A=M-1
 M=-M
-// Increment stack pointer
-@SP
-M=M+1
 #+end_example
 
 ** Equality
@@ -273,9 +250,10 @@ Assembly code:
 #+begin_example
 // Decrement stack pointer and pop into D
 @SP
-A=M-1
+M=M-1
+A=M
 D=M
-// Pop from stack, subtract D from popped value and store in D
+// Select next value on stack, substract D from M and store in D
 A=A-1
 D=M-D
 // Push -1 to stack if eq, 0 if else
@@ -284,12 +262,8 @@ M=-1
 D;JEQ
 @SP
 A=M-1
-A=A-1
 M=0
-// Decrement the stack pointer
 (eq1)
-@SP
-M=M-1
 #+end_example
 
 For gt or lt, replace JEQ with JGT or JLT.
@@ -302,22 +276,12 @@ and
 
 Assembly code:
 #+begin_example
-// Decrement stack pointer and pop into D
 @SP
 M=M-1
 A=M
 D=M
-// Decrement stack pointer, perform bitwise and, and store in D
-@SP
-M=M-1
-A=M
-D=D&M
-// Push value onto stack
-@SP
-A=M
-M=D
-@SP
-M=M+1
+A=M-1
+M=D&M
 #+end_example
 
 For or replace D&M with D|M.
@@ -330,13 +294,7 @@ not
 
 Assembly code:
 #+begin_example
-// Decrement stack pointer and select next value on stack
 @SP
-M=M-1
-A=M
-// Bitwise not
+A=M-1
 M=!M
-// Increment stack pointer
-@SP
-M=M+1
 #+end_example
