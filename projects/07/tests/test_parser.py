@@ -1,28 +1,5 @@
-from vm_translator.parser import Parser
+from vm_translator.parser import Parser, Command
 import pytest
-
-
-def test_advance():
-    advance = Parser("./tests/parser/Advance.vm")
-    assert advance._current_command == -1
-    advance.advance()
-    assert advance._current_command == 0
-    assert advance._command[advance._current_command] == "pop local 2"
-    advance.advance()
-    assert advance._current_command == 1
-    assert advance._command[advance._current_command] == "push local 2"
-
-
-def test_has_no_more_lines():
-    empty = Parser("./tests/parser/Empty.vm")
-    assert empty.has_more_lines() == False
-
-
-def test_has_one_more_line():
-    one_line = Parser("./tests/parser/OneLine.vm")
-    assert one_line.has_more_lines() == True
-    one_line.advance()
-    assert one_line.has_more_lines() == False
 
 
 @pytest.mark.parametrize(
@@ -52,9 +29,9 @@ def test_has_one_more_line():
 )
 def test_command_type(command, expected_type):
     empty = Parser("./tests/parser/Empty.vm")
-    empty._current_command = 0
-    empty._commands.append(command)
-    assert empty.command_type() == expected_type
+    empty._commands.append(Command(command))
+    for command in empty:
+        assert command.type == expected_type
 
 
 @pytest.mark.parametrize(
@@ -83,25 +60,25 @@ def test_command_type(command, expected_type):
 )
 def test_arg1(command, expected_arg1):
     empty = Parser("./tests/parser/Empty.vm")
-    empty._current_commands = 0
-    empty._commands.append(command)
-    assert empty.symbol() == expected_arg1
+    empty._commands.append(Command(command))
+    for command in empty:
+        assert command.arg1 == expected_arg1
 
 
 @pytest.mark.parametrize(
     "command, expected_arg2",
     [
-        ("pop local 2", "2"),
-        ("push static 8", "8"),
-        ("function main 0", "0"),
-        ("function factorial 1", "1"),
-        ("function max 2", "2"),
-        ("call main 0", "0"),
-        ("call factorial 1", "1"),
+        ("pop local 2", 2),
+        ("push static 8", 8),
+        ("function main 0", 0),
+        ("function factorial 1", 1),
+        ("function max 2", 2),
+        ("call main 0", 0),
+        ("call factorial 1", 1),
     ],
 )
 def test_arg2(command, expected_arg2):
     empty = Parser("./tests/parser/Empty.vm")
-    empty._current_commands = 0
-    empty._commands.append(command)
-    assert empty.symbol() == expected_arg2
+    empty._commands.append(Command(command))
+    for command in empty:
+        assert command.arg2 == expected_arg2
