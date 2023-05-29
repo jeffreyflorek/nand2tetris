@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(
     description="Translates Hack VM commands into assembly language.",
 )
 
-parser.add_argument("-o", "--out", help="output file, defaults to Filename.asm")
+# parser.add_argument("-o", "--out", help="output file, defaults to Filename.asm")
 
 required = parser.add_argument_group("required")
 required.add_argument("file", help="file to be assembled, in the form of Filename.vm")
@@ -21,13 +21,9 @@ except FileNotFoundError:
     raise SystemExit("No such file: '" + args.file + "'")
 
 print("Translating " + args.file + "...")
-print("Not implemented!")
+vm_translator.translate()
 print("Success!")
-
-if args.out:
-    outfile = args.out
-else:
-    outfile = ".".join(args.file.split(".")[0:-1]) + ".hack"
-
-print("Writing " + outfile + "...")
-print("Not implemented!")
+# if args.out:
+#     outfile = args.out
+# else:
+#     outfile = ".".join(args.file.split(".")[0:-1]) + ".hack"
