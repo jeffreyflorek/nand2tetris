@@ -1,0 +1,300 @@
+#+title: VM Commmand to Assembly Code Specification
+
+* Push commands
+** Local variables, arguments, "this", and "that"
+Push VM command for local variables (~LCL~), arguments (~ARG~), "this" (~THIS~), or "that" ~THAT~). Pushes value from ~segment[index]~ to stack:
+#+begin_example
+push segment index
+#+end_example
+
+Assembly code (with argument ~local 2~):
+#+begin_example
+// Load local[2] into D register
+@LCL
+D=M
+@2
+A=D+A
+D=M
+// Push the value of the D register onto the stack
+@SP
+A=M
+M=D
+@SP
+M=M+1
+#+end_example
+
+** Pointers
+Push VM command for ~pointer~:
+#+begin_example
+push pointer 0
+#+end_example
+
+Assembly code (~pointer 0~ is ~THIS~, ~pointer 1~ is ~THAT~):
+#+begin_example
+// Load value of THIS into D register
+@THIS
+D=M
+// Push D onto stack
+@SP
+A=M
+M=D
+@SP
+M=M+1
+#+end_example
+
+** Temporary variables
+Push VM command for ~temp~:
+#+begin_example
+push temp 3
+#+end_example
+
+Assembly code:
+#+begin_example
+// Load temp[3] into D register
+@5
+D=A
+@3
+A=D+A
+D=M
+// Push D onto stack
+@SP
+A=M
+M=D
+@SP
+M=M+1
+#+end_example
+
+** Constants
+Push VM command for ~constant~:
+#+begin_example
+push constant 17
+#+end_example
+
+Assembly code:
+#+begin_example
+// Load 17 into D register
+@17
+D=A
+// Push D onto stack
+@SP
+A=M
+M=D
+@SP
+M=M+1
+#+end_example
+
+** Static variables
+Push VM command for ~static~:
+#+begin_example
+push static 4
+#+end_example
+
+Assembly code, assume VM file is named =Foo.vm=:
+#+begin_example
+// Load value of static 4 into D
+@Foo.4
+D=M
+// Push D onto stack
+@SP
+A=M
+M=D
+@SP
+M=M+1
+#+end_example
+
+* Pop commands
+** Local variables, arguments, "this", and "that"
+Pop VM command for local variables (~LCL~), arguments (~ARG~), "this" (~THIS~), or "that" ~THAT~). Pushes value from ~segment[index]~ to stack:
+#+begin_example
+pop segment index
+#+end_example
+
+Assembly code (with argument ~local 2~):
+#+begin_example
+// Load memory address of local[2] into R13
+@LCL
+D=M
+@2
+D=D+A
+@R13
+M=D
+// Decrement stack and pop value into D register
+@SP
+M=M-1
+A=M
+D=M
+// Store D register in local[2]
+@R13
+A=M
+M=D
+#+end_example
+
+** Pointers
+Pop VM command for ~pointer~:
+#+begin_example
+pop pointer 0
+#+end_example
+
+Assembly code (~pointer 0~ is ~THIS~, ~pointer 1~ is ~THAT~):
+#+begin_example
+// Decrement stack pointer and load value into D
+@SP
+M=M-1
+A=M
+D=M
+// Store D register in THIS
+@THIS
+M=D
+#+end_example
+
+** Temporary variables
+pop VM command for ~temp~:
+#+begin_example
+pop temp 3
+#+end_example
+
+Assembly code:
+#+begin_example
+// Store address of temp[3] in R13
+@5
+D=A
+@3
+D=D+A
+@R13
+M=D
+// Decrement stack pointer and pop into D
+@SP
+M=M-1
+A=M
+D=M
+// Store D in temp[3]
+@R13
+A=M
+M=D
+#+end_example
+
+** Static variables
+Pop VM command for ~static~:
+#+begin_example
+pop static 4
+#+end_example
+
+Assembly code, assume VM file is named =Foo.vm=:
+#+begin_example
+// Decrement stack pointer and pop value into D
+@SP
+M=M-1
+A=M
+D=M
+// Store value in static 4
+@Foo.4
+M=D
+#+end_example
+
+* Arithmetic-Logical Commands
+** Addition
+Pop two values off of the stack, add them together, and push the value to the stack:
+#+begin_example
+add
+#+end_example
+
+Assembly code:
+#+begin_example
+// Decrement stack pointer and pop into D
+@SP
+M=M-1
+A=M
+D=M
+// Move one address down the stack
+A=A-1
+// Add
+M=D+M
+#+end_example
+
+** Subtraction
+Pop two values off of the stack, subtract the first from the second, and push the value to the stack:
+#+begin_example
+sub
+#+end_example
+
+Assembly code:
+#+begin_example
+@SP
+M=M-1
+A=M
+D=M
+A=A-1
+M=M-D
+#+end_example
+
+** Negation
+Pop value off of stack, negate, and push back to stack:
+#+begin_example
+neg
+#+end_example
+
+Assembly code:
+#+begin_example
+@SP
+A=M-1
+M=-M
+#+end_example
+
+** Equality
+Pop two values off of the stack, push -1 onto stack if they're equal or 0 if they aren't:
+#+begin_example
+eq
+#+end_example
+
+Assembly code:
+#+begin_example
+// Decrement stack pointer and pop into D
+@SP
+M=M-1
+A=M
+D=M
+// Select next value on stack, substract D from M and store in D
+A=A-1
+D=M-D
+// Push -1 to stack if eq, 0 if else
+M=-1
+@eq1
+D;JEQ
+@SP
+A=M-1
+M=0
+(eq1)
+#+end_example
+
+For gt or lt, replace JEQ with JGT or JLT.
+
+** Bitwise and/or
+Pop two values off of the stack, AND them together, and push the result onto the stack
+#+begin_example
+and
+#+end_example
+
+Assembly code:
+#+begin_example
+@SP
+M=M-1
+A=M
+D=M
+A=M-1
+M=D&M
+#+end_example
+
+For or replace D&M with D|M.
+
+** Bitwise not
+Pop value off of the stack, NOT it, and push result to stack:
+#+begin_example
+not
+#+end_example
+
+Assembly code:
+#+begin_example
+@SP
+A=M-1
+M=!M
+#+end_example
