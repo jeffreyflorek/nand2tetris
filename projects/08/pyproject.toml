@@ -1,0 +1,13 @@
+[project]
+name = "hack_vm_translator"
+version = "0.0.2"
+authors = [
+  { name="Jeffrey Florek", email="me@jeffreyflorek.com" },
+]
+description = "VM translator for the Hack computer from nand2tetris"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "src"
