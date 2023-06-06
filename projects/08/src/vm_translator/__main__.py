@@ -22,44 +22,30 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-source = pathlib.Path(args.source)
+source = pathlib.Path(args.source).absolute()
 if not source.exists():
     raise SystemExit('Source not found: "' + args.source + '"')
 
 filename_format = re.compile(r"[A-Z][a-zA-Z]*.vm")
 
-files = []
 if source.is_dir():
-    files = [
+    if not [
         f
         for f in source.iterdir()
         if filename_format.fullmatch(f.name) and not f.is_dir()
-    ]
-    if not files:
+    ]:
         raise SystemExit(
             'Folder "' + str(source) + '" must contain at least one .vm file'
         )
-elif filename_format.fullmatch(source.name):
-    files = source
 else:
-    raise SystemExit(
-        "File name must start with a capital letter and have a .vm extension, e.g. Filename.vm"
-    )
+    if not filename_format.fullmatch(source.name):
+        raise SystemExit(
+            "File name must start with a capital letter and have a .vm extension, e.g. Filename.vm"
+        )
 
-if isinstance(files, list):
-    print("Translating files: " + ", ".join(str(file) for file in files))
-else:
-    print("Translating file: " + str(files))
+print("Loading " + source.name)
+vm_translator = VMTranslator(source)
 
-# try:
-#     vm_translator = VMTranslator(args.file)
-# except FileNotFoundError:
-#     raise SystemExit("No such file: '" + args.file + "'")
-
-# print("Translating " + args.file + "...")
-# vm_translator.translate()
-# print("Success!")
-# if args.out:
-#     outfile = args.out
-# else:
-#     outfile = ".".join(args.file.split(".")[0:-1]) + ".hack"
+print("Translating " + source.name + "...")
+vm_translator.translate()
+print("Success!")
