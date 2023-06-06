@@ -6,7 +6,7 @@ import re
 from .vm_translator import VMTranslator
 
 parser = argparse.ArgumentParser(
-    prog="hack_vm_translator",
+    prog="vm_translator",
     description="Translates Hack VM commands into assembly language.",
 )
 
@@ -47,9 +47,9 @@ else:
     )
 
 if isinstance(files, list):
-    print("Translating files: " + ", ".join(file.name for file in files))
+    print("Translating files: " + ", ".join(str(file) for file in files))
 else:
-    print("Translating file: " + files.name)
+    print("Translating file: " + str(files))
 
 # try:
 #     vm_translator = VMTranslator(args.file)
