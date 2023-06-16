@@ -1,0 +1,26 @@
+name: 'Project 08/Part 1'
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - projects/08/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest
+      - name: Test with pytest
+        run: |
+          cd ./projects/08
+          pytest -k 'test_translate_file'
