@@ -40,6 +40,24 @@ class CodeWriter:
         else:
             self._write_pop(segment, index)
 
+    def write_label(self, label):
+        raise NotImplementedError
+
+    def write_goto(self, label):
+        raise NotImplementedError
+
+    def write_if(self, label):
+        raise NotImplementedError
+
+    def write_function(self, function_name, argument_count):
+        raise NotImplementedError
+
+    def write_call(self, function_name, argument_count):
+        raise NotImplementedError
+
+    def write_return(self):
+        raise NotImplementedError
+
     def _pop_d(self):
         self._file.write("@SP\nM=M-1\nA=M\nD=M\n")
 
