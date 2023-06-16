@@ -1,11 +1,9 @@
-import pathlib
-
-
 class CodeWriter:
     def __init__(self, file_path, bootstrap=True):
         self._file_path = file_path
-        self._name = pathlib.Path(file_path).stem
+        self._file_name = file_path.stem
         self._bootstrap = bootstrap
+        self._function_name = "none"
 
         self._label_id = 0
         self._segment_dict = {
@@ -22,6 +20,14 @@ class CodeWriter:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._file:
             self._file.close()
+
+    @property
+    def file_name(self):
+        return self._file_name
+
+    @file_name.setter
+    def file_name(self, file_name):
+        self._file_name = file_name
 
     def write_arithmetic(self, command):
         match command:
@@ -41,16 +47,21 @@ class CodeWriter:
             self._write_pop(segment, index)
 
     def write_label(self, label):
-        raise NotImplementedError
+        self._file.write(f"({self._file_name}.{self._function_name}${label})\n")
 
     def write_goto(self, label):
-        raise NotImplementedError
+        self._file.write(f"@{self._file_name}.{self._function_name}${label}\n0;JMP\n")
 
     def write_if(self, label):
-        raise NotImplementedError
+        self._pop_d()
+        self._file.write(f"@{self._file_name}.{self._function_name}${label}\nD;JNE\n")
 
     def write_function(self, function_name, argument_count):
         raise NotImplementedError
+        # self._function_name = function_name
+        # self._file.write(f"({self._file_name}.{self._function_name})")
+        # for _ in range(argument_count):
+        #     self._file.write("@SP\nM=M+1\nA=M-1\nM=0\n")
 
     def write_call(self, function_name, argument_count):
         raise NotImplementedError
@@ -74,19 +85,10 @@ class CodeWriter:
 
     def _write_comp(self, command):
         self._pop_d()
-        self._file.write(
-            (
-                "A=A-1\n"
-                "D=M-D\n"
-                "M=-1\n"
-                "@{0}{1}\n"
-                "D;J{0}\n"
-                "@SP\n"
-                "A=M-1\n"
-                "M=0\n"
-                "({0}{1})\n"
-            ).format(command.upper(), self._label_id)
-        )
+        command = command.upper()
+        self._file.write(f"A=A-1\nD=M-D\nM=-1\n@{command}{self._label_id}\n")
+        self._file.write(f"D;J{command}\n@SP\nA=M-1\nM=0\n")
+        self._file.write(f"({command}{self._label_id})\n")
         self._label_id += 1
 
     def _write_and_or(self, command):
@@ -125,7 +127,7 @@ class CodeWriter:
                 index = 0
                 load_address = True
             case ("static", _):
-                segment = self._name + "." + str(index)
+                segment = f"{self._file_name}.{str(index)}"
                 index = 0
 
         self._load_to_d(segment, index, load_address, pointer)
@@ -149,35 +151,35 @@ class CodeWriter:
                 self._load_addr_to_d("5", index, pointer=False)
                 self._load_d_to_addr(segment)
             case ("static", _):
-                segment = self._name + "." + str(index)
+                segment = f"{self._file_name}.{str(index)}"
 
         self._pop_d()
         self._load_d_to_addr(segment, pointer)
 
     def _load_addr_to_d(self, address, offset=0, pointer=True):
         if offset and pointer:
-            self._file.write("@{0}\nD=M\n@{1}\nD=D+A\n".format(address, offset))
+            self._file.write(f"@{address}\nD=M\n@{offset}\nD=D+A\n")
         elif offset and not pointer:
-            self._file.write("@{0}\nD=A\n@{1}\nD=D+A\n".format(address, offset))
+            self._file.write(f"@{address}\nD=A\n@{offset}\nD=D+A\n")
         elif pointer and not offset:
-            self._file.write("@{0}\nD=M\n".format(address))
+            self._file.write(f"@{address}\nD=M\n")
         else:
-            self._file.write("@{0}\nD=A\n".format(address))
+            self._file.write(f"@{address}\nD=A\n")
 
     def _load_d_to_addr(self, address, pointer=False):
         if pointer:
-            self._file.write("@{0}\nA=M\nM=D\n".format(address))
+            self._file.write(f"@{address}\nA=M\nM=D\n")
         else:
-            self._file.write("@{0}\nM=D\n".format(address))
+            self._file.write(f"@{address}\nM=D\n")
 
     def _load_to_d(self, address, offset=0, load_address=False, pointer=True):
         if pointer and offset and not load_address:
-            self._file.write("@{0}\nD=M\n@{1}\nA=D+A\nD=M\n".format(address, offset))
+            self._file.write(f"@{address}\nD=M\n@{offset}\nA=D+A\nD=M\n")
         elif pointer and offset and load_address:
-            self._file.write("@{0}\nD=A\n@{1}\nA=D+A\nD=M\n".format(address, offset))
+            self._file.write(f"@{address}\nD=A\n@{offset}\nA=D+A\nD=M\n")
         elif load_address and not offset:
-            self._file.write("@{0}\nD=A\n".format(address))
+            self._file.write(f"@{address}\nD=A\n")
         elif pointer:
-            self._file.write("@{0}\nA=M\nD=M\n".format(address))
+            self._file.write(f"@{address}\nA=M\nD=M\n")
         else:
-            self._file.write("@{0}\nD=M\n".format(address))
+            self._file.write(f"@{address}\nD=M\n")
