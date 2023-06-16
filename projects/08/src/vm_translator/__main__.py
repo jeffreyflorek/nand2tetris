@@ -10,14 +10,18 @@ parser = argparse.ArgumentParser(
     description="Translates Hack VM commands into assembly language.",
 )
 
-# parser.add_argument("-o", "--out", help="output file, defaults to Filename.asm")
+parser.add_argument(
+    "-nb",
+    "--no-bootstrap",
+    action="store_false",
+    help="don't write VM boostrap code to assembly file (for testing purposes only)",
+)
 
-# required = parser.add_argument_group("required")
 parser.add_argument(
     "source",
     nargs="?",
     default=".",
-    help="source to be assembled, either a folder or a .vm file",
+    help="source to be assembled, either a folder or a .vm file, defaults to the current folder",
 )
 
 args = parser.parse_args()
@@ -44,7 +48,7 @@ else:
         )
 
 print("Loading " + source.name)
-vm_translator = VMTranslator(source)
+vm_translator = VMTranslator(source, bootstrap=parser.parse_args(["--no-bootstrap"]))
 
 print("Translating " + source.name + "...")
 vm_translator.translate()

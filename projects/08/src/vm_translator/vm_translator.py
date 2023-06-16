@@ -4,12 +4,13 @@ import pathlib
 
 
 class VMTranslator:
-    def __init__(self, file_path):
+    def __init__(self, file_path, bootstrap=True):
         self._parser = Parser(file_path)
         self._out_file = pathlib.Path(file_path).with_suffix(".asm")
+        self._bootstrap = bootstrap
 
     def translate(self):
-        with CodeWriter(self._out_file) as writer:
+        with CodeWriter(self._out_file, bootstrap=self._bootstrap) as writer:
             for command in self._parser:
                 if command.type == "C_ARITHMETIC":
                     writer._file.write("// " + command._command + "\n")

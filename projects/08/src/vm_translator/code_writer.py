@@ -2,9 +2,11 @@ import pathlib
 
 
 class CodeWriter:
-    def __init__(self, file_path):
+    def __init__(self, file_path, bootstrap=True):
         self._file_path = file_path
         self._name = pathlib.Path(file_path).stem
+        self._bootstrap = bootstrap
+
         self._label_id = 0
         self._segment_dict = {
             "local": "LCL",
