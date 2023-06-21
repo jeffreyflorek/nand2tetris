@@ -9,11 +9,12 @@ import subprocess
     [
         "../tests/ProgramFlow/BasicLoop/BasicLoop",
         "../tests/ProgramFlow/FibonacciSeries/FibonacciSeries",
+        "../tests/FunctionCalls/SimpleFunction/SimpleFunction",
     ],
 )
 def test_translate_file(file):
     translator = subprocess.run(
-        "python -m vm_translator " + file + ".vm",
+        f"python -m vm_translator --no-bootstrap {file}.vm",
         cwd="./src",
         shell=True,
         capture_output=True,
@@ -34,11 +35,8 @@ def test_translate_file(file):
 @pytest.mark.parametrize(
     "folder",
     [
-        "../tests/ProgramFlow/BasicLoop",
-        "../tests/ProgramFlow/FibonacciSeries",
-        "../tests/FunctionCalls/FibonnacciElement",
+        "../tests/FunctionCalls/FibonacciElement",
         "../tests/FunctionCalls/NestedCall",
-        "../tests/FunctionCalls/SimpleFunction",
         "../tests/FunctionCalls/StaticsTest",
     ],
 )
@@ -53,7 +51,7 @@ def test_translate_folder(folder):
         pytest.fail(translator.stderr.decode("utf-8").strip())
 
     test = subprocess.run(
-        "../../../tools/CPUEmulator.sh " + folder + folder.split("/")[-1] + ".tst",
+        f"../../../tools/CPUEmulator.sh {folder}/{folder.split('/')[-1]}.tst",
         cwd="./src",
         shell=True,
         capture_output=True,

@@ -14,9 +14,10 @@ class VMTranslator:
             for file in self._in_files:
                 parser = Parser(file)
                 writer.file_name = file.stem
+                print(f"Translating {file.stem}...")
                 for command in parser:
                     if self._debug:
-                        writer._file.write("// " + command._command + "\n")
+                        writer._file.write(f"// {command._command}\n")
                     if command.type == "C_ARITHMETIC":
                         writer.write_arithmetic(command.arg1)
                     elif command.type in ("C_PUSH", "C_POP"):

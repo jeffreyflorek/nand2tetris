@@ -16,6 +16,7 @@ parser.add_argument(
     "-nb",
     "--no-bootstrap",
     action="store_false",
+    dest="bootstrap",
     help="don't write VM boostrap code to assembly file (for testing purposes only)",
 )
 
@@ -33,7 +34,7 @@ if not source.exists():
     raise SystemExit('Source not found: "' + args.source + '"')
 output = pathlib.Path(args.output).absolute() if args.output else None
 
-filename_format = re.compile(r"[A-Z][a-zA-Z]*.vm")
+filename_format = re.compile(r"[A-Z][a-zA-Z0-9]*.vm")
 
 if source.is_dir():
     input = [
@@ -42,10 +43,8 @@ if source.is_dir():
         if filename_format.fullmatch(f.name) and not f.is_dir()
     ]
     if not input:
-        raise SystemExit(
-            'Folder "' + str(source) + '" must contain at least one .vm file'
-        )
-    output = source.with_suffix(".asm")
+        raise SystemExit(f'Folder "{str(source)}" must contain at least one .vm file')
+    output = source / f"{source.name}.asm"
     print(f"Loading folder: {source.name}")
 else:
     if not filename_format.fullmatch(source.name):
@@ -57,9 +56,8 @@ else:
     print(f"Loading file: {source.name}")
 
 vm_translator = VMTranslator(
-    input, output, bootstrap=parser.parse_args(["--no-bootstrap"]), debug_comments=True
+    input, output, bootstrap=args.bootstrap, debug_comments=True
 )
 
-print(f"Translating...")
 vm_translator.translate()
 print("Success!")
